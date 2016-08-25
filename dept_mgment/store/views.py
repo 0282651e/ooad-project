@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from django.views.generic import FormView, TemplateView, View
 
 from .models import *
@@ -46,3 +46,14 @@ class BillView(View):
             context = {'bill': [(Product.objects.get(id=code), qty)
                 for code, qty in request.session.get('bill')]}
             return render(request, self.template_name, context)
+
+class OrderView(View):
+    template_name='store/order.html'
+    def post(self, request):
+        product_code = request.POST.get('product_code')
+        quantity = request.POST.get('quantity')
+        print(product_code)
+        print(quantity)
+        context = {'order':"hello world"}
+        return render(request,self.template_name,context)
+

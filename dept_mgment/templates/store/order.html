@@ -1,0 +1,16 @@
+{% extends "base.html"%}
+
+{%block main%}
+
+<div class ="container">
+	
+  <form action="" method="post">
+    {% csrf_token %}
+    <input type="text" name="product_code" required>
+    <input type="number" name="quantity" min="1" required>
+    <button type="submit">Add Order</button>
+  </form>
+
+ </div>
+
+{%endblock main%}
