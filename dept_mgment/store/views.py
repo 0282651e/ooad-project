@@ -19,16 +19,15 @@ class BillView(View):
     def get(self, request):
         if not request.session.get('bill'):
             request.session['bill'] = []
-        context = {'bill': [(Product.objects.get(id=code), qty)
-            for code, qty in request.session.get('bill')]}
-        return render(request, self.template_name, context)
+        c= {}
+        c['bill'] = [(Product.objects.get(id=code), qty)
+                for code, qty in request.session.get('bill')]
+        c['total'] = sum([p.sell_price for (p,q) in c['bill']])
+        return render(request, self.template_name, c)
 
     def post(self, request):
         if request.POST.get('reset_bill'):
             request.session['bill'] = []
-            context = {'bill': [(Product.objects.get(id=code), qty)
-                for code, qty in request.session.get('bill')]}
-            return render(request, self.template_name, context)
 
         elif request.POST.get('product_code'):
             product_code = request.POST.get('product_code')
@@ -40,14 +39,11 @@ class BillView(View):
             request.session['bill'].append((product_code, quantity))
             request.session.modified = True
 
-            context = {'bill': [(Product.objects.get(id=code), qty)
-                for code, qty in request.session.get('bill')]}
-            return render(request, self.template_name, context)
-
         elif request.POST.get('commit'):
             bill = Bill.objects.create()
             for code, qty in request.session.get('bill'):
                 product = Product.objects.get(id=code)
                 ProductSale.objects.create(product=product, bill=bill, quantity=qty)
             request.session['bill'] = []
-            return redirect('/')
+
+        return redirect('store_bill')
