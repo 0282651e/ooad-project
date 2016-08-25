@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <input type="text" name="product_code" required>
+    <input type="number" name="quantity" min="1" required>
+    <button type="submit">Add product</button>
+  </form>
+
+  {% if bill %}
+  <ul>
+    {% for product, quantity in bill %}
+      <li>{{ product }},  {{ quantity }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="reset_bill" value="1">
+    <button type="submit">Reset bill</button>
+  </form>
+
+</div>{# container #}
+{% endblock main %}

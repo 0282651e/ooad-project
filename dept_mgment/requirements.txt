@@ -1,0 +1,6 @@
+django
+django-environ
+django-bootstrap3
+mysqlclient
+configparser
+

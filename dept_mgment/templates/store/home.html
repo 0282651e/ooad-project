@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+
+  <ul>
+  {% for p in products %}
+    <li>{{ p.name }}</li>
+  {% endfor %}
+  </ul>
+
+</div>{# container #}
+{% endblock main %}

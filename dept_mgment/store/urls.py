@@ -1,7 +1,8 @@
-from django.conf.urls import url
-from django.conf.urls import include
-from .views import show_bill_form
+from django.conf.urls import include, url
+
+from .views import BillView, HomeView
 
 urlpatterns = [
-    url(r'^$',show_bill_form, name='bill_form'),
+    url(r'^$', HomeView.as_view(), name='store_home'),
+    url(r'^bill/$', BillView.as_view(), name='store_bill')
 ]

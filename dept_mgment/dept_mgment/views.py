@@ -5,4 +5,4 @@ from django.views.generic import View
 class Home(View):
 
     def get(self, request):
-        return redirect('bill_form')
+        return redirect('store_bill')

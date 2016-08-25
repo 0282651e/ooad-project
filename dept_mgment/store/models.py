@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from __future__ import unicode_literals
 
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -24,7 +25,6 @@ class Jobtype(models.Model):
     job = models.CharField(max_length=30)
 
     class Meta:
-
         db_table = 'JobType'
 
     def __str__(self):
@@ -32,14 +32,13 @@ class Jobtype(models.Model):
 
 
 class Order(models.Model):
-    product = models.ForeignKey('Product', models.DO_NOTHING)
-    ordered_date = models.DateField()
+    product = models.ForeignKey('Product', models.SET_NULL, null=True)
+    ordered_date = models.DateField(auto_now_add=True)
     quantity_ordered = models.IntegerField()
-    staff = models.ForeignKey('Staff', models.DO_NOTHING)
-    status = models.ForeignKey('Status', models.DO_NOTHING)
+    staff = models.ForeignKey('Staff', models.SET_NULL, null=True)
+    status = models.ForeignKey('Status', models.SET_NULL, null=True)
 
     class Meta:
-
         db_table = 'Order'
 
     def __str__(self):
@@ -49,17 +48,16 @@ class Order(models.Model):
 class Product(models.Model):
     id = models.CharField(primary_key=True, max_length=5)
     name = models.CharField(max_length=40)
-    stock = models.IntegerField()
+    stock = models.IntegerField(default=0)
     cost_price = models.FloatField()
     sell_price = models.FloatField()
-    category = models.ForeignKey(Category, models.DO_NOTHING)
-    supplier = models.ForeignKey('Supplier', models.DO_NOTHING)
+    category = models.ForeignKey(Category, models.SET_NULL, null=True)
+    supplier = models.ForeignKey('Supplier', models.SET_NULL, null=True)
     mfd_date = models.DateField()
     exp_date = models.DateField()
-    rack = models.ForeignKey('Rack', models.DO_NOTHING)
+    rack = models.ForeignKey('Rack', models.SET_NULL, null=True)
 
     class Meta:
-
         db_table = 'Product'
 
     def __str__(self):
@@ -70,20 +68,22 @@ class Rack(models.Model):
     col_num = models.IntegerField()
 
     class Meta:
-
         db_table = 'Rack'
+
+    def __str__(self):
+        return str(self.col_num)
 
 
 class Staff(models.Model):
+    user = models.OneToOneField(User, null=True)
     name = models.CharField(max_length=40)
     sex = models.CharField(max_length=10)
     phone = models.CharField(max_length=15)
     salary = models.DecimalField(max_digits=10, decimal_places=2)
-    jobtype = models.ForeignKey(Jobtype, models.DO_NOTHING)
+    jobtype = models.ForeignKey(Jobtype, models.SET_NULL, null=True)
     address = models.CharField(max_length=40)
 
     class Meta:
-
         db_table = 'Staff'
 
     def __str__(self):
@@ -96,7 +96,6 @@ class Supplier(models.Model):
     phone = models.CharField(max_length=15)
 
     class Meta:
-
         db_table = 'Supplier'
 
     def __str__(self):
@@ -104,33 +103,39 @@ class Supplier(models.Model):
 
 
 class Bill(models.Model):
-    staff = models.ForeignKey(Staff, models.DO_NOTHING)
-    total_amount = models.FloatField()
-    created_at = models.DateTimeField()
+    staff = models.ForeignKey(Staff, models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     class Meta:
-
         db_table = 'bill'
 
+    def __str__(self):
+        return str(self.pk)
 
-class BillDetail(models.Model):
-    product_id = models.CharField(max_length=5)
-    bill = models.ForeignKey(Bill)
-    quantity_bought = models.IntegerField()
+    def total_price(self):
+        total = 0.0
+        for sale in self.product_sale_set.all():
+            total += sale.product.sell_price * sale.quantity
+        return total
+
+
+class ProductSale(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    bill = models.ForeignKey(Bill, related_name='product_sale_set', on_delete=models.CASCADE)
+    quantity = models.IntegerField()
 
     class Meta:
-
         db_table = 'bill_detail'
 
     def __str__(self):
-        return self.name
+        return str(self.pk)
 
 
 class Status(models.Model):
     name = models.CharField(max_length=20)
 
     class Meta:
-
         db_table = 'status'
 
     def __str__(self):
