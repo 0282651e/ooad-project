@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import redirect, render
 from django.views.generic import FormView, TemplateView, View
 
 from .models import *
@@ -17,20 +17,20 @@ class BillView(View):
     template_name = 'store/bill.html'
 
     def get(self, request):
-        print(request.session.get('bill'))
         if not request.session.get('bill'):
             request.session['bill'] = []
-            request.session.modified = True
-        context = {'bill': [(Product.objects.get(id=code), qty)
-            for code, qty in request.session.get('bill')]}
-        return render(request, self.template_name, context)
+        c = {}
+        c['bill'] = [(Product.objects.get(id=code), int(qty))
+                     for code, qty in request.session.get('bill')]
+        # calculate grand total
+        c['total'] = 0
+        for p, q in c['bill']:
+            c['total'] += p.sell_price * int(q)
+        return render(request, self.template_name, c)
 
     def post(self, request):
         if request.POST.get('reset_bill'):
             request.session['bill'] = []
-            context = {'bill': [(Product.objects.get(id=code), qty)
-                for code, qty in request.session.get('bill')]}
-            return render(request, self.template_name, context)
 
         elif request.POST.get('product_code'):
             product_code = request.POST.get('product_code')
@@ -38,14 +38,25 @@ class BillView(View):
 
             if not request.session.get('bill'):
                 request.session['bill'] = []
-                request.session.modified = True
 
-            request.session['bill'].append((product_code, quantity))
+            request.session['bill'].append((product_code, int(quantity)))
             request.session.modified = True
 
-            context = {'bill': [(Product.objects.get(id=code), qty)
-                for code, qty in request.session.get('bill')]}
-            return render(request, self.template_name, context)
+        elif request.POST.get('commit'):
+            # Check for stock
+            for code, qty in request.session.get('bill'):
+                product = Product.objects.get(id=code)
+                if product.stock < int(qty):
+                    raise Exception("quantity is greater than stock")
+            bill = Bill.objects.create()
+            for code, qty in request.session.get('bill'):
+                product = Product.objects.get(id=code)
+                product.stock -= int(qty)
+                product.save()
+                ProductSale.objects.create(product=product, bill=bill, quantity=qty)
+            request.session['bill'] = []
+
+        return redirect('store_bill')
 
 class OrderView(View):
     template_name='store/order.html'
