@@ -11,12 +11,14 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+
 import environ
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 
-root = environ.Path(__file__)-2
+root = environ.Path(__file__) - 2
 
-#read .env file
+# read .env file
 ENV = environ.Env()
 ENV.read_env(root('.env'))
 BASE_DIR = root()
@@ -63,7 +65,7 @@ ROOT_URLCONF = 'dept_mgment.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [root('templates'),],
+        'DIRS': [root('templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,10 +87,10 @@ WSGI_APPLICATION = 'dept_mgment.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': ENV('DB_HOST',default='DEFAULT_DB_HOST'),
-        'NAME': ENV('DB_NAME',default='DEFAULT_DB_NAME'),
-        'USER': ENV('DB_USER',default='DEFAULT_DB_USER'),
-        'PASSWORD': ENV('DB_PASS',default='DEFAULT_DB_PASS'),
+        'HOST': ENV('DB_HOST', default='DEFAULT_DB_HOST'),
+        'NAME': ENV('DB_NAME', default='DEFAULT_DB_NAME'),
+        'USER': ENV('DB_USER', default='DEFAULT_DB_USER'),
+        'PASSWORD': ENV('DB_PASS', default='DEFAULT_DB_PASS'),
     }
 }
 
@@ -130,3 +132,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+STATIC_ROOT = root('static')
+MEDIA_ROOT = root('media')
+
+STATICFILES_DIRS = [
+    root('stat'),
+]

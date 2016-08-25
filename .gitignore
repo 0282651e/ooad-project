@@ -1,0 +1,13 @@
+*.pyc
+**__pycache__**
+dept_mgment/*/migrations/0*.py
+dept_mgment/.env
+static
+media
+bin/
+dept_mgment/.gitignore
+lib/
+lib64
+ooad/
+pip-selfcheck.json
+pyvenv.cfg

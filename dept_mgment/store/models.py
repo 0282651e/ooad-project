@@ -15,6 +15,7 @@ class Category(models.Model):
 
     class Meta:
         db_table = 'Category'
+
     def __str__(self):
         return self.name
 
@@ -23,10 +24,12 @@ class Jobtype(models.Model):
     job = models.CharField(max_length=30)
 
     class Meta:
-        
+
         db_table = 'JobType'
+
     def __str__(self):
         return self.name
+
 
 class Order(models.Model):
     product = models.ForeignKey('Product', models.DO_NOTHING)
@@ -36,10 +39,12 @@ class Order(models.Model):
     status = models.ForeignKey('Status', models.DO_NOTHING)
 
     class Meta:
-        
+
         db_table = 'Order'
+
     def __str__(self):
         return self.name
+
 
 class Product(models.Model):
     id = models.CharField(primary_key=True, max_length=5)
@@ -54,18 +59,19 @@ class Product(models.Model):
     rack = models.ForeignKey('Rack', models.DO_NOTHING)
 
     class Meta:
-        
+
         db_table = 'Product'
+
     def __str__(self):
         return self.name
+
 
 class Rack(models.Model):
     col_num = models.IntegerField()
 
     class Meta:
-        
+
         db_table = 'Rack'
-    
 
 
 class Staff(models.Model):
@@ -77,8 +83,9 @@ class Staff(models.Model):
     address = models.CharField(max_length=40)
 
     class Meta:
-        
+
         db_table = 'Staff'
+
     def __str__(self):
         return self.name
 
@@ -89,8 +96,9 @@ class Supplier(models.Model):
     phone = models.CharField(max_length=15)
 
     class Meta:
-        
+
         db_table = 'Supplier'
+
     def __str__(self):
         return self.name
 
@@ -101,18 +109,19 @@ class Bill(models.Model):
     created_at = models.DateTimeField()
 
     class Meta:
-        
+
         db_table = 'bill'
 
 
 class BillDetail(models.Model):
     product_id = models.CharField(max_length=5)
-    bill_id = models.IntegerField()
+    bill = models.ForeignKey(Bill)
     quantity_bought = models.IntegerField()
 
     class Meta:
-        
+
         db_table = 'bill_detail'
+
     def __str__(self):
         return self.name
 
@@ -121,7 +130,8 @@ class Status(models.Model):
     name = models.CharField(max_length=20)
 
     class Meta:
-        
+
         db_table = 'status'
+
     def __str__(self):
         return self.name
