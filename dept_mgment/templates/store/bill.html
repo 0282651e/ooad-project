@@ -16,6 +16,14 @@
       <li>{{ product }},  {{ quantity }}</li>
     {% endfor %}
   </ul>
+
+  Grand total: {{ total }}
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="commit" value="1">
+    <button type="submit">Commit</button>
+  </form>
   {% endif %}
 
 

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import FormView, TemplateView, View
 
 from .models import *
@@ -17,10 +17,8 @@ class BillView(View):
     template_name = 'store/bill.html'
 
     def get(self, request):
-        print(request.session.get('bill'))
         if not request.session.get('bill'):
             request.session['bill'] = []
-            request.session.modified = True
         context = {'bill': [(Product.objects.get(id=code), qty)
             for code, qty in request.session.get('bill')]}
         return render(request, self.template_name, context)
@@ -38,7 +36,6 @@ class BillView(View):
 
             if not request.session.get('bill'):
                 request.session['bill'] = []
-                request.session.modified = True
 
             request.session['bill'].append((product_code, quantity))
             request.session.modified = True
@@ -46,3 +43,11 @@ class BillView(View):
             context = {'bill': [(Product.objects.get(id=code), qty)
                 for code, qty in request.session.get('bill')]}
             return render(request, self.template_name, context)
+
+        elif request.POST.get('commit'):
+            bill = Bill.objects.create()
+            for code, qty in request.session.get('bill'):
+                product = Product.objects.get(id=code)
+                ProductSale.objects.create(product=product, bill=bill, quantity=qty)
+            request.session['bill'] = []
+            return redirect('/')
