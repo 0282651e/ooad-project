@@ -1,0 +1,32 @@
+{% load bootstrap3 %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% block head_title %}{% endblock head_title %} | BTS</title>
+
+  {% bootstrap_css %}
+
+  {% block styles %}{% endblock styles %}
+
+
+  {% bootstrap_javascript jquery=1 %}
+</head>
+
+<body>
+
+  {% include 'nav.html' %} 
+
+  {% bootstrap_messages %}
+
+  {% block main %}{% endblock main %}
+
+  {% include 'footer.html' %}
+
+</body>
+
+</html>

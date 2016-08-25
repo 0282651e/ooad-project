@@ -1,0 +1,42 @@
+{%extends "base.html"%}
+
+{% block head_title %}Bill Form{% endblock head_title %}
+
+{%block main%}
+
+    <form class="navbar-form navbar-right" role="search" method="get" action="{% url "product-search"">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Enter code" name='q'
+          {% if request.GET.q %}
+                  value="{{ request.GET.q }}"
+                {% endif %}>
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-default">
+              <span class="glyphicon glyphicon-pushpin"></span>
+            </button>
+          </span>
+        </div>
+      </form>
+
+
+<table class="table table-condensed table-hover table-striped">
+	<tr>
+		<th> No. </th>
+		<th> Code </th>
+		<th> Item Name </th>
+		<th> Rate </th>
+		<th> Quantity </th>
+		<th> Total </th>
+	</tr>
+
+	<tr>
+		<td> 
+		</td>
+</table>
+
+
+
+
+
+
+{%endblock main%}
