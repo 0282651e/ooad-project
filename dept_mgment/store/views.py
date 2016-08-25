@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views.generic import FormView, TemplateView, View
 
 from .models import *
@@ -19,10 +19,13 @@ class BillView(View):
     def get(self, request):
         if not request.session.get('bill'):
             request.session['bill'] = []
-        c= {}
-        c['bill'] = [(Product.objects.get(id=code), qty)
-                for code, qty in request.session.get('bill')]
-        c['total'] = sum([p.sell_price for (p,q) in c['bill']])
+        c = {}
+        c['bill'] = [(Product.objects.get(id=code), int(qty))
+                     for code, qty in request.session.get('bill')]
+        # calculate grand total
+        c['total'] = 0
+        for p, q in c['bill']:
+            c['total'] += p.sell_price * int(q)
         return render(request, self.template_name, c)
 
     def post(self, request):
@@ -36,13 +39,20 @@ class BillView(View):
             if not request.session.get('bill'):
                 request.session['bill'] = []
 
-            request.session['bill'].append((product_code, quantity))
+            request.session['bill'].append((product_code, int(quantity)))
             request.session.modified = True
 
         elif request.POST.get('commit'):
+            # Check for stock
+            for code, qty in request.session.get('bill'):
+                product = Product.objects.get(id=code)
+                if product.stock < int(qty):
+                    raise Exception("quantity is greater than stock")
             bill = Bill.objects.create()
             for code, qty in request.session.get('bill'):
                 product = Product.objects.get(id=code)
+                product.stock -= int(qty)
+                product.save()
                 ProductSale.objects.create(product=product, bill=bill, quantity=qty)
             request.session['bill'] = []
 
