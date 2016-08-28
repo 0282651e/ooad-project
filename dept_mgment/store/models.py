@@ -28,7 +28,7 @@ class Jobtype(models.Model):
         db_table = 'JobType'
 
     def __str__(self):
-        return self.name
+        return self.job
 
 
 class Order(models.Model):
@@ -42,7 +42,7 @@ class Order(models.Model):
         db_table = 'Order'
 
     def __str__(self):
-        return self.name
+        return self.product.name
 
 
 class Product(models.Model):
@@ -75,7 +75,7 @@ class Rack(models.Model):
 
 
 class Staff(models.Model):
-    user = models.OneToOneField(User, null=True)
+    user = models.OneToOneField(User, null=True, blank=True)
     name = models.CharField(max_length=40)
     sex = models.CharField(max_length=10)
     phone = models.CharField(max_length=15)

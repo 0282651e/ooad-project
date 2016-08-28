@@ -17,6 +17,7 @@ class BillView(View):
     template_name = 'store/bill.html'
 
     def get(self, request):
+        # request.session['bill'] = []
         if not request.session.get('bill'):
             request.session['bill'] = []
         c = {}
@@ -60,11 +61,16 @@ class BillView(View):
 
 class OrderView(View):
     template_name='store/order.html'
+
+    def get(self,request):
+        context = {'order':"hello world"}
+        return render(request,self.template_name,context)
+
     def post(self, request):
         product_code = request.POST.get('product_code')
         quantity = request.POST.get('quantity')
         print(product_code)
         print(quantity)
-        context = {'order':"hello world"}
-        return render(request,self.template_name,context)
+        return redirect('store_order')
+        
 
