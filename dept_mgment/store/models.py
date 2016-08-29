@@ -124,6 +124,8 @@ class ProductSale(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     bill = models.ForeignKey(Bill, related_name='product_sale_set', on_delete=models.CASCADE)
     quantity = models.IntegerField()
+    rate = models.FloatField(default=0, null=False)
+    total = models.FloatField(default=0, null=False)
 
     class Meta:
         db_table = 'bill_detail'

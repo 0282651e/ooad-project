@@ -21,12 +21,12 @@ class BillView(View):
         if not request.session.get('bill'):
             request.session['bill'] = []
         c = {}
-        c['bill'] = [(Product.objects.get(id=code), int(qty))
-                     for code, qty in request.session.get('bill')]
+        c['bill'] = [(Product.objects.get(id=code), int(qty),rate,total)
+                     for code, qty, rate, total in request.session.get('bill')]
         # calculate grand total
-        c['total'] = 0
-        for p, q in c['bill']:
-            c['total'] += p.sell_price * int(q)
+        c['grand_total'] = 0
+        for p, q, m, n in c['bill']:
+            c['grand_total'] += n
         return render(request, self.template_name, c)
 
     def post(self, request):
@@ -36,25 +36,26 @@ class BillView(View):
         elif request.POST.get('add'):
             product_code = request.POST.get('product_code')
             quantity = request.POST.get('quantity')
-
+            rate = Product.objects.get(id=product_code).sell_price
+            total = int(quantity)*rate
             if not request.session.get('bill'):
                 request.session['bill'] = []
 
-            request.session['bill'].append((product_code, int(quantity)))
+            request.session['bill'].append((product_code, int(quantity),rate,total))
             request.session.modified = True
 
         elif request.POST.get('commit'):
             # Check for stock
-            for code, qty in request.session.get('bill'):
+            for code, qty, rate, total in request.session.get('bill'):
                 product = Product.objects.get(id=code)
                 if product.stock < int(qty):
                     raise Exception("quantity is greater than stock")
             bill = Bill.objects.create()
-            for code, qty in request.session.get('bill'):
+            for code, qty, rate, total in request.session.get('bill'):
                 product = Product.objects.get(id=code)
                 product.stock -= int(qty)
                 product.save()
-                ProductSale.objects.create(product=product, bill=bill, quantity=qty)
+                ProductSale.objects.create(product=product, bill=bill, quantity=qty, rate=rate, total=total)
             request.session['bill'] = []
         return redirect('store_bill')
 

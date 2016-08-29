@@ -10,15 +10,39 @@
     <button type="submit" name="add" value="1">Add product</button>
   </form>
 
-  {% if bill %}
-  <ul>
-    {% for product, quantity in bill %}
-      <li>{{ product }},  {{ quantity }}</li>
+  
+<table class="table table-condensed table-hover table-striped">
+
+<thead>
+  <tr>
+    <td width="30%"> <h3>Description</h3> </td>
+    <td align="right" width="20%"> <h3>Quantity</h3> </td>
+    <td align="right"> <h3>Rate</h3> </td>
+    <td align="right"> <h3>Total</h3> </td>
+<!--     <td align="right" width="20%"> <h3>Stock</h3> </td>
+    <td align="right" width="20%"> <h3>Price</h3> -->
+  </tr>
+</thead>
+ 
+ <tbody>
+ {% if bill %}
+    {% for product, quantity, rate, total in bill %}
+      <tr>
+        <td width="30%">{{ product|truncatechars:100 }}</td>
+        <td align="right" width="20%">{{ quantity}}</td> 
+        <td align="right">{{rate}}</td>
+        <td align="right">{{total}}</td>
     {% endfor %}
-  </ul>
+      </tr>
+    <tr> 
+    <td></td>
+    <td></td>
+    <td></td>
+    <td align="right">Grand total: Rs. {{ grand_total }}</td>
+    </tr>
+</tbody>
 
-  Grand total: Rs. {{ total }}
-
+</table>
   <form action="" method="post">
     {% csrf_token %}
     <input type="hidden" name="commit" value="1">
