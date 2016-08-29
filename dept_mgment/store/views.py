@@ -21,8 +21,8 @@ class BillView(View):
         if not request.session.get('bill'):
             request.session['bill'] = []
         c = {}
-        # c['bill'] = [(Product.objects.get(id=code), int(qty))
-        #              for code, qty in request.session.get('bill')]
+        c['bill'] = [(Product.objects.get(id=code), int(qty))
+                     for code, qty in request.session.get('bill')]
         # calculate grand total
         c['total'] = 0
         for p, q in c['bill']:
@@ -33,7 +33,7 @@ class BillView(View):
         if request.POST.get('reset_bill'):
             request.session['bill'] = []
 
-        elif request.POST.get('product_code'):
+        elif request.POST.get('add'):
             product_code = request.POST.get('product_code')
             quantity = request.POST.get('quantity')
 
@@ -56,7 +56,6 @@ class BillView(View):
                 product.save()
                 ProductSale.objects.create(product=product, bill=bill, quantity=qty)
             request.session['bill'] = []
-
         return redirect('store_bill')
 
 class OrderView(View):

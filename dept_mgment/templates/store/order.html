@@ -27,9 +27,9 @@
 	<tr>
 		<td> <h3>Id</h3> </td>
 		<td> <h3>Product Name</h3> </td>
-		<td> <h3>Quantity Ordered</h3> </td>
-		<td> <h3>Ordered Date</h3>
-		<td> <h3>Status</h3>
+		<td align="right" width="20%"> <h3>Quantity Ordered</h3> </td>
+		<td align="right" width="20%"> <h3>Ordered Date</h3>
+		<td align="right"> <h3>Status</h3>
 	</tr>
 </thead>
  
@@ -38,9 +38,9 @@
       <tr>
         <td>{{ p.id }}</td>
         <td>{{ p.product|truncatechars:100 }}</td>
-        <td>{{ p.quantity_ordered}}</td>
-      	<td>{{ p.ordered_date}}</td>
-      	<td>{{ p.status}}</td>
+        <td align="right" width="20%">{{ p.quantity_ordered}}</td>
+      	<td align="right" width="20%">{{ p.ordered_date}}</td>
+      	<td align="right">{{ p.status}}</td>
       </tr>
     {% endfor %}
 </tbody>

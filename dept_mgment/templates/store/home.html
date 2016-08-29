@@ -10,8 +10,8 @@
 	<tr>
 		<td> <h3>Code</h3> </td>
 		<td> <h3>Product Name</h3> </td>
-		<td> <h3>Stock</h3> </td>
-		<td> <h3>Price</h3>
+		<td align="right" width="20%"> <h3>Stock</h3> </td>
+		<td align="right" width="20%"> <h3>Price</h3>
 	</tr>
 </thead>
  
@@ -19,9 +19,9 @@
     {% for p in products %}
       <tr>
         <td>{{ p.id }}</td>
-        <td>{{ p.name|truncatechars:100 }}</td>
-        <td>{{ p.stock}}</td>
-      	<td>{{ p.sell_price}}</td>
+        <td width="30%">{{ p.name|truncatechars:100 }}</td>
+        <td align="right" width="20%">{{ p.stock}}</td>
+      	<td align="right" width="20%">{{ p.sell_price}}</td>
       </tr>
     {% endfor %}
 </tbody>

@@ -7,7 +7,7 @@
     {% csrf_token %}
     <input type="text" name="product_code" required>
     <input type="number" name="quantity" min="1" required>
-    <button type="submit">Add product</button>
+    <button type="submit" name="add" value="1">Add product</button>
   </form>
 
   {% if bill %}
