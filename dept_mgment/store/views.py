@@ -63,14 +63,47 @@ class OrderView(View):
     template_name='store/order.html'
 
     def get(self,request):
-        context = {'order':"hello world"}
+        order = Order.objects.all()
+        context = {'order':order}
         return render(request,self.template_name,context)
 
+
     def post(self, request):
-        product_code = request.POST.get('product_code')
-        quantity = request.POST.get('quantity')
-        print(product_code)
-        print(quantity)
+       
+        # Order Part
+        if request.POST.get('order_button'):
+            product_code = request.POST.get('order_product_code')
+            quantity = request.POST.get('order_quantity')
+            product = Product.objects.get(id=product_code)
+            status = Status.objects.get(id=1)
+            order = Order.objects.create(product=product,quantity_ordered=quantity,status=status)
+
+        # Delivery Part
+        if request.POST.get('deliver_button'):
+            order_id = request.POST.get('delivery_id')
+            quantity = request.POST.get('delivery_quantity')
+            cost_price = request.POST.get('delivery_cost_price')
+            sell_price = request.POST.get('delivery_sell_price')
+
+            order = Order.objects.get(id=order_id)
+            product =Product.objects.get(name=order.product)
+            # if quantity<order.quantity_ordered:
+            #     display warning msg
+            product.stock+=int(quantity)
+            product.cost_price=float(cost_price)
+            product.sell_price=float(sell_price)
+            product.save()
+            order.status=Status.objects.get(id=2)
+            order.save()
         return redirect('store_order')
+
         
+class SupplierView(TemplateView):
+    template_name='store/supplier.html'
+    
+    def get_context_data(self, **kwargs):
+        c = super(SupplierView, self).get_context_data(**kwargs)
+        c['supplier'] = Supplier.objects.all()
+        return c
+
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+
+<table class="table table-condensed table-hover table-striped">
+
+<thead>
+	<tr>
+		<td> <h3>Id</h3> </td>
+		<td> <h3>Name</h3> </td>
+		<td> <h3>Address</h3> </td>
+		<td> <h3>Contact</h3> </td>
+	</tr>
+</thead>
+ 
+ <tbody>
+    {% for p in supplier %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.name|truncatechars:100 }}</td>
+        <td>{{ p.address|truncatechars:100 }}</td>
+        <td>{{ p.phone }}</td>
+      </tr>
+    {% endfor %}
+</tbody>
+
+</table>
+
+</div>{# container #}
+{% endblock main %}
+
+

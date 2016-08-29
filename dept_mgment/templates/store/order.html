@@ -3,13 +3,49 @@
 {%block main%}
 
 <div class ="container">
-	
+	<!-- Order Part -->
   <form action="" method="post">
     {% csrf_token %}
-    <input type="text" name="product_code" required>
-    <input type="number" name="quantity" min="1" required>
-    <button type="submit">Add Order</button>
+    <input type="text" name="order_product_code" placeholder="Product Code" required>
+    <input type="number" name="order_quantity" placeholder="Quantity" min="1" required>
+  	<button type="submit" name="order_button" value = "1">Add Order</button>
   </form>
+<!--   Delivery Part -->
+
+  <form action="" method="post">
+    {% csrf_token %}
+    <input type="text" name="delivery_id" placeholder="Order Id" required>
+    <input type="number" name="delivery_quantity" placeholder="Quantity" min="1" required>
+    <input type="text" name="delivery_cost_price" placeholder="Cost Price" min="1" required>
+    <input type="text" name="delivery_sell_price" placeholder="Sell Price">
+    <button type="submit" name="deliver_button" value = "1">Register delivery</button>
+    </form>
+
+<table class="table table-condensed table-hover table-striped">
+
+<thead>
+	<tr>
+		<td> <h3>Id</h3> </td>
+		<td> <h3>Product Name</h3> </td>
+		<td> <h3>Quantity Ordered</h3> </td>
+		<td> <h3>Ordered Date</h3>
+		<td> <h3>Status</h3>
+	</tr>
+</thead>
+ 
+ <tbody>
+    {% for p in order %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.product|truncatechars:100 }}</td>
+        <td>{{ p.quantity_ordered}}</td>
+      	<td>{{ p.ordered_date}}</td>
+      	<td>{{ p.status}}</td>
+      </tr>
+    {% endfor %}
+</tbody>
+
+</table>
 
  </div>
 
