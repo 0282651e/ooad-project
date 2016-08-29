@@ -21,8 +21,8 @@ class BillView(View):
         if not request.session.get('bill'):
             request.session['bill'] = []
         c = {}
-        c['bill'] = [(Product.objects.get(id=code), int(qty))
-                     for code, qty in request.session.get('bill')]
+        # c['bill'] = [(Product.objects.get(id=code), int(qty))
+        #              for code, qty in request.session.get('bill')]
         # calculate grand total
         c['total'] = 0
         for p, q in c['bill']:
