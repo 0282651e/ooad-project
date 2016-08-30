@@ -4,16 +4,25 @@ from django.views.generic import FormView, TemplateView, View
 from .models import *
 
 
-class HomeView(TemplateView):
+class HomeView(View):
     template_name = 'store/home.html'
 
-    def get_context_data(self, **kwargs):
-        c = super(HomeView, self).get_context_data(**kwargs)
-        c['products'] = Product.objects.all()
-        return c
+    def get(self,request):
+        context={}
+        if request.GET.get('query'):
+            query =request.GET.get('query')
+            print(query)
+            result = Product.objects.filter(name__icontains=query)
+            if result:
+                context = {'products':result}
+            else:
+                raise Exception("Not Found")    
+        else:
+            context={'products':Product.objects.all()}
+        return render(request,self.template_name,context)
 
 
-class BillView(View):
+class MakeBill(View):
     template_name = 'store/bill.html'
 
     def get(self, request):
@@ -106,4 +115,31 @@ class SupplierView(TemplateView):
         c['supplier'] = Supplier.objects.all()
         return c
 
+
+class ViewBill(View):
+    template_name ='store/viewbill.html'
+
+    def get(self,request):
+        return render(request,self.template_name,{})
+                
+    def post(self,request):
+        context={}
+        if request.POST.get('viewbill'):
+            bill_number = int(request.POST.get('bill_number'))
+            if ProductSale.objects.filter(bill=bill_number):
+                bill = []
+                grand_total=0
+                for q in ProductSale.objects.filter(bill=bill_number):
+                    product = q.product 
+                    quantity = q.quantity
+                    rate = q.rate
+                    total = q.total
+                    grand_total+=total
+                    bill.append((product,quantity,rate,total))
+                context = {'bill':bill,
+                            'grand_total':grand_total}
+            else:
+                raise Exception("Bill not found")
+        return render(request,self.template_name,context)
+        
 

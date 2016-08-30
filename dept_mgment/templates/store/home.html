@@ -3,6 +3,19 @@
 {% block main %}
 <div class="container">
 
+      <form method="get" action="{% url "store_home" %}">
+        <div class="input-group" >
+          <input type="text" class="form-control" placeholder="Search" name='query'
+          {% if request.GET.query %}
+                  value="{{ request.GET.query }}"
+                {% endif %}>
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-default">
+              <span class="glyphicon glyphicon-search"></span>
+            </button>
+          </span>
+        </div>
+      </form>
 
 <table class="table table-condensed table-hover table-striped">
 
@@ -12,6 +25,7 @@
 		<td> <h3>Product Name</h3> </td>
 		<td align="right" width="20%"> <h3>Stock</h3> </td>
 		<td align="right" width="20%"> <h3>Price</h3>
+    <td align="right" width="20%"> <h3>Rack No.</h3>
 	</tr>
 </thead>
  
@@ -22,6 +36,7 @@
         <td width="30%">{{ p.name|truncatechars:100 }}</td>
         <td align="right" width="20%">{{ p.stock}}</td>
       	<td align="right" width="20%">{{ p.sell_price}}</td>
+        <td align="right" width="20%">{{ p.rack}}</td>
       </tr>
     {% endfor %}
 </tbody>
@@ -30,5 +45,10 @@
 
 </div>{# container #}
 {% endblock main %}
+
+
+
+
+
 
 

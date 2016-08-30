@@ -5,14 +5,12 @@
 
   <form action="" method="post">
     {% csrf_token %}
-    <input type="text" placeholder = "Code" name="product_code" required>
-    <input type="number" placeholder = "Quantity" name="quantity" min="1" required>
-    <button type="submit" name="add" value="1">Add product</button>
+    <input type="text" placeholder = "Bill Number" name="bill_number" required>
+    <button type="submit" name="viewbill" value="1">View Bill</button>
   </form>
 
-  {% if bill %}
+{%if bill%}
 <table class="table table-condensed table-hover table-striped">
-
 <thead>
   <tr>
     <td width="30%"> <h3>Description</h3> </td>
@@ -25,7 +23,6 @@
 </thead>
  
  <tbody>
- 
     {% for product, quantity, rate, total in bill %}
       <tr>
         <td width="30%">{{ product|truncatechars:100 }}</td>
@@ -43,19 +40,7 @@
 </tbody>
 
 </table>
-  <form action="" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="commit" value="1">
-    <button type="submit">Commit</button>
-  </form>
-  {% endif %}
-
-
-  <form action="" method="post">
-    {% csrf_token %}
-    <input type="hidden" name="reset_bill" value="1">
-    <button type="submit">Reset bill</button>
-  </form>
+{%endif%}
 
 </div>{# container #}
 {% endblock main %}
